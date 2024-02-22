@@ -2,8 +2,6 @@ from markdown.extensions import Extension
 from markdown.preprocessors import Preprocessor
 import yaml, json
 
-OCX_YAML_STARTER = "---"
-
 SCRIPT_STARTER = '<script type="application/ld+json">\n'
 
 class OCXMetadata(Extension):
