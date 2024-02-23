@@ -1,5 +1,5 @@
 import markdown
-from addbioschemas import OCXMetadata
+from addbioschemas import addbioschemas
 TESTINPUT = '''
 # awesome title
 [add-bioschemas]

@@ -10,7 +10,8 @@ authors = [
 ]
 description = "A markdown extension to add bioschemas markup to rendered html"
 dependencies = [
-    "markdown"
+    "markdown",
+    "pyyaml"
 ]
 
 [project.urls]
