@@ -35,7 +35,7 @@ class addbioschemasPreprocessor(Preprocessor):
                 
                 if len(options) == 1:
                     # if no file is specified, use the default metadata file specified in the config
-                    yaml_file = self.md.metadata
+                    meta_file = self.md.metadata
                 else:
                     # if file is specified, use that and parse other options
                     # removes add-bioschemas
@@ -44,15 +44,20 @@ class addbioschemasPreprocessor(Preprocessor):
                     for opt in options:
                         key, value = opt.split("=")
                         opt_dict[key] = value.strip("'\"")
-                    yaml_file = opt_dict["file"]
-                    
-                with open(yaml_file, 'r') as file:
-                    bs_yaml = yaml.safe_load(file)
+                    meta_file = opt_dict["file"]
+                
+                # load metadata file 
+                with open(meta_file, 'r') as file:
+                    if (meta_file.endswith(("yaml", "yml"))):
+                        meta_dict = yaml.safe_load(file)
+                    elif (meta_file.endswith("json")):
+                        meta_dict = json.load(file)
+                
                 new_line = (
-                    '<script type="application/ld+json">\n' + json.dumps(bs_yaml, indent=4) + "\n</script>"
+                    '<script type="application/ld+json">\n' + json.dumps(meta_dict, indent=4) + "\n</script>"
                 )
                 new_lines.append(new_line)
-                self.md.meta = bs_yaml
+                self.md.meta = meta_dict
             else:
                 new_lines.append(line)
             
