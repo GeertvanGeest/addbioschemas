@@ -8,6 +8,13 @@ A small markdown extension to add bioschemas to mkdocs. It requires a yaml or js
 pip install addbioschemas
 ```
 
+To use the plugin simply add `addbioschemas` to the list of plugins in `mkdocs.yml`:
+
+```yml
+markdown_extensions:
+  - addbioschemas
+```
+
 ## Usage
 
 ### Option 1: add the bioschemas file name to the markdown file
