@@ -10,7 +10,7 @@ pip install addbioschemas
 
 ## Usage
 
-### Option1: add the bioschemas file name to the markdown file
+### Option 1: add the bioschemas file name to the markdown file
 
 Simply add `[add-bioschemas file='path/to/yaml/metadata.yaml']` to the markdown file where you want to add the bioschemas. This method supports multiple metadata files. 
 
@@ -50,7 +50,7 @@ author:
 
 `addbioschemas` also supports the json format. 
 
-### Option2: add the bioschemas file name to mkdocs.yml
+### Option 2: add the bioschemas file name to mkdocs.yml
 
 Specify the path to the yaml file in `mkdocs.yml`. This method only supports one metadata file.
 
