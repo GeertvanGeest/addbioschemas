@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "addbioschemas"
-version = "0.0.2"
+version = "0.0.3"
 readme = "README.md"
 authors = [
   { name="Geert van Geest", email="geert.vangeest@sib.swiss" },
@@ -12,7 +12,8 @@ authors = [
 description = "A markdown extension to add bioschemas markup to rendered html"
 dependencies = [
     "markdown",
-    "pyyaml"
+    "pyyaml",
+    "ushlex"
 ]
 
 [project.urls]

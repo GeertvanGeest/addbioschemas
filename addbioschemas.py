@@ -1,21 +1,26 @@
-from markdown.extensions import Extension
+
 from markdown.preprocessors import Preprocessor
-import yaml, json
+from markdown.extensions import Extension
+import yaml, json, shlex
 
 class addbioschemas(Extension):
     """Python-Markdown extension for adding bioschemas markup to HTML output."""
 
     def __init__(self, *args, **kwargs):
-        # define config option for specifying yaml file
-        self.config = {"yaml": ["", "Specify yaml"]}
+        # define config option for specifying metadata file
+        self.config = {"metadata": ["", "Specify a metadata files"]}
         super(addbioschemas, self).__init__(*args, **kwargs)
 
     def extendMarkdown(self, md):
         md.registerExtension(self)
         self.md = md
-        self.md.yaml = self.getConfig("yaml")
-        md.preprocessors.register(addbioschemasPreprocessor(md), "addbioschemas", 28)
-
+        # should be a dict
+        self.md.metadata = self.getConfig("metadata")
+        md.preprocessors.register(
+            addbioschemasPreprocessor(md),
+            "addbioschemas",
+            28
+            )
 
 class addbioschemasPreprocessor(Preprocessor):
     def run(self, lines):
@@ -23,8 +28,24 @@ class addbioschemasPreprocessor(Preprocessor):
         new_lines = []
         while lines:  # run through all the lines of md looking for [add-bioschemas]
             line = lines.pop(0)
-            if line == "[add-bioschemas]":  
-                yaml_file = self.md.yaml
+            if line.startswith("[add-bioschemas"): 
+                trimmed_string = line.strip("[]")
+                # splits correctly based on spaces within quotes
+                options = shlex.split(trimmed_string)
+                
+                if len(options) == 1:
+                    # if no file is specified, use the default metadata file specified in the config
+                    yaml_file = self.md.metadata
+                else:
+                    # if file is specified, use that and parse other options
+                    # removes add-bioschemas
+                    options = options[1:]
+                    opt_dict = {}
+                    for opt in options:
+                        key, value = opt.split("=")
+                        opt_dict[key] = value.strip("'\"")
+                    yaml_file = opt_dict["file"]
+                    
                 with open(yaml_file, 'r') as file:
                     bs_yaml = yaml.safe_load(file)
                 new_line = (
