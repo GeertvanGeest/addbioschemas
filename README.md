@@ -29,6 +29,8 @@ A markdown snippet of a page where you want to add bioschemas to:
 I started with some YAML and turned it into JSON-LD
 ```
 
+**Important**: If you are using [mkdocs-material](https://squidfunk.github.io/mkdocs-material/), make sure there is markdown before the insertion of `[add-bioschemas]`. Otherwise, other plugins will add incorrect tags to the json-LD chunk. 
+
 The contents of `path/to/yaml/metadata.yaml` use the bioschemas properties:
 
 ```yaml
@@ -76,3 +78,6 @@ A markdown snippet of a page where you want to add bioschemas to:
 [add-bioschemas]
 I started with some YAML and turned it into JSON-LD
 ```
+
+
+**Important**: If you are using [mkdocs-material](https://squidfunk.github.io/mkdocs-material/), make sure there is markdown before the insertion of `[add-bioschemas]`. Otherwise, other plugins will add incorrect tags to the json-LD chunk. 
