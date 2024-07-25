@@ -13,7 +13,8 @@ description = "A markdown extension to add bioschemas markup to rendered html"
 dependencies = [
     "markdown",
     "pyyaml",
-    "ushlex"
+    "ushlex",
+    "re"
 ]
 
 [project.urls]

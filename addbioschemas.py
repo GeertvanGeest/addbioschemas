@@ -1,7 +1,7 @@
 
 from markdown.preprocessors import Preprocessor
 from markdown.extensions import Extension
-import yaml, json, shlex
+import yaml, json, shlex, re
 
 class addbioschemas(Extension):
     """Python-Markdown extension for adding bioschemas markup to HTML output."""
@@ -24,11 +24,31 @@ class addbioschemas(Extension):
 
 class addbioschemasPreprocessor(Preprocessor):
     def run(self, lines):
+
         self.md.meta = None
         new_lines = []
+        inside_comment_block = False
+        inside_code_block = False
+
         while lines:  # run through all the lines of md looking for [add-bioschemas]
+
             line = lines.pop(0)
-            if line.startswith("[add-bioschemas"): 
+
+            # ignore lines that are in between <!-- and --> as they are comments
+            # Check for the start of a comment block
+            if re.match(r"<!--", line):
+                inside_comment_block = True
+            
+            # Check for the end of a comment block
+            if re.match(r"-->", line):
+                inside_comment_block = False
+
+            # Check for the start of a code block
+            if re.match(r"```", line):
+                inside_code_block = not inside_code_block
+            
+            # If not inside a comment or code block, perform the replacement
+            if line.startswith("[add-bioschemas") and not inside_comment_block and not inside_code_block:
                 trimmed_string = line.strip("[]")
                 # splits correctly based on spaces within quotes
                 options = shlex.split(trimmed_string)
@@ -60,7 +80,6 @@ class addbioschemasPreprocessor(Preprocessor):
                 self.md.meta = meta_dict
             else:
                 new_lines.append(line)
-            
         return new_lines
 
 
