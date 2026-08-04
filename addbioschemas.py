@@ -1,7 +1,9 @@
 
 from markdown.preprocessors import Preprocessor
 from markdown.extensions import Extension
-import yaml, json, shlex, re
+import json
+import shlex
+import yaml
 
 class addbioschemas(Extension):
     """Python-Markdown extension for adding bioschemas markup to HTML output."""
@@ -34,25 +36,26 @@ class addbioschemasPreprocessor(Preprocessor):
 
             line = lines.pop(0)
 
-            # ignore lines that are in between <!-- and --> as they are comments
-            # Check for the start of a comment block
-            if re.match(r"<!--", line):
+            # ignore lines that are in between <!-- and --> as they are comments.
+            # A line that opens and closes the comment on its own (e.g. "<!-- foo -->")
+            # must not flip the state permanently.
+            has_open = "<!--" in line
+            has_close = "-->" in line
+            if has_open and not has_close:
                 inside_comment_block = True
-            
-            # Check for the end of a comment block
-            if re.match(r"-->", line):
+            elif has_close:
                 inside_comment_block = False
 
-            # Check for the start of a code block
-            if re.match(r"```", line):
+            # Check for the start/end of a code block
+            if line.startswith("```"):
                 inside_code_block = not inside_code_block
-            
+
             # If not inside a comment or code block, perform the replacement
             if line.startswith("[add-bioschemas") and not inside_comment_block and not inside_code_block:
                 trimmed_string = line.strip("[]")
                 # splits correctly based on spaces within quotes
                 options = shlex.split(trimmed_string)
-                
+
                 if len(options) == 1:
                     # if no file is specified, use the default metadata file specified in the config
                     meta_file = self.md.metadata
@@ -62,17 +65,27 @@ class addbioschemasPreprocessor(Preprocessor):
                     options = options[1:]
                     opt_dict = {}
                     for opt in options:
-                        key, value = opt.split("=")
+                        key, value = opt.split("=", 1)
                         opt_dict[key] = value.strip("'\"")
+                    if "file" not in opt_dict:
+                        raise ValueError(
+                            "[add-bioschemas] requires a 'file' option, "
+                            "e.g. [add-bioschemas file='path/to/metadata.yaml']"
+                        )
                     meta_file = opt_dict["file"]
-                
-                # load metadata file 
-                with open(meta_file, 'r') as file:
-                    if (meta_file.endswith(("yaml", "yml"))):
+
+                # load metadata file
+                with open(meta_file, "r", encoding="utf-8") as file:
+                    if meta_file.endswith(("yaml", "yml")):
                         meta_dict = yaml.safe_load(file)
-                    elif (meta_file.endswith("json")):
+                    elif meta_file.endswith("json"):
                         meta_dict = json.load(file)
-                
+                    else:
+                        raise ValueError(
+                            f"Unsupported metadata file format: '{meta_file}'. "
+                            "Use a .yaml, .yml or .json file."
+                        )
+
                 new_line = (
                     '<script type="application/ld+json">\n' + json.dumps(meta_dict, indent=4) + "\n</script>"
                 )

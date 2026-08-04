@@ -2,6 +2,8 @@
 
 A small markdown extension to add bioschemas to mkdocs. It requires a yaml or json file with bioschemas markup, and adds it to the rendered html. 
 
+`addbioschemas` is a plain [Python-Markdown](https://python-markdown.github.io/) extension, so it also works with [Zensical](https://zensical.org/), the static site generator built by the Material for MkDocs team. Zensical reads `mkdocs.yml` directly and runs Python-Markdown extensions unchanged, so everything below applies to Zensical projects as-is — no separate configuration is needed.
+
 ## Installation
 
 ```bash
@@ -81,3 +83,9 @@ I started with some YAML and turned it into JSON-LD
 
 
 **Important**: If you are using [mkdocs-material](https://squidfunk.github.io/mkdocs-material/), make sure there is markdown before the insertion of `[add-bioschemas]`. Otherwise, other plugins will add incorrect tags to the json-LD chunk. 
+
+## Using with Zensical
+
+[Zensical](https://zensical.org/) can read an existing `mkdocs.yml` file directly, and runs the same Python-Markdown extensions without changes, so both options above work in a Zensical project without modification — just install `addbioschemas` and keep your `mkdocs.yml` as is.
+
+If you migrate a project to Zensical's native `zensical.toml` configuration instead, configure `addbioschemas` under its `markdown_extensions` setting the same way you would for any other Python-Markdown extension; see the [Zensical documentation](https://zensical.org/docs/setup/basics/) for the exact syntax.
